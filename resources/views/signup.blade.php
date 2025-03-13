@@ -16,14 +16,20 @@
 
         <!-- Display Validation Errors -->
         @if ($errors->any())
-            <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-5" role="alert">
-                <strong class="font-bold">Whoops!</strong>
-                <span class="block">Please fix the following errors:</span>
-                <ul class="mt-2 list-disc list-inside">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
+            <div id="errorModal" class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                <div class="bg-white p-4 rounded-lg shadow-lg max-w-sm">
+                    <h2 class="text-red-600 font-bold text-lg">Whoops!</h2>
+                    <span class="block text-gray-700">Please fix the following errors:</span>
+                    <ul class="mt-2 text-sm text-red-500">
+                        @foreach ($errors->all() as $error)
+                            <li>• {{ $error }}</li>
+                        @endforeach
+                    </ul>
+                    <button onclick="document.getElementById('errorModal').style.display='none'"
+                        class="mt-4 w-full bg-red-500 text-white py-1.5 rounded-lg hover:bg-red-600 transition">
+                        Close
+                    </button>
+                </div>
             </div>
         @endif
         

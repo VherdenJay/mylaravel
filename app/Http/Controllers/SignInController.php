@@ -35,6 +35,7 @@ class SignInController extends Controller
         }
 
         return back()->withErrors(['logpassword' => 'Incorrect credentials']);
+        return back()->withErrors(['logemail' => 'Incorrect credentials']);
     }
 
     // Signup function
@@ -71,6 +72,6 @@ class SignInController extends Controller
         $user = User::create($incomingFields);
         auth()->login($user);
 
-        return redirect('/login')->with('success', 'Registered successfully');
+        return redirect('/login');
     }
 }
