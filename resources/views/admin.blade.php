@@ -33,35 +33,86 @@
         <div id="products">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Product Management</h1>
 
-            <button class="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600">Add Product</button>
+            <button class="bg-blue-500 text-white px-4 py-2 rounded mb-4 hover:bg-blue-600" id="addProductButton">Add Product</button>
+
+
+            <!-- add product modal -->
+            <div id="addProducts" class="hidden">
+                <form action="/store" method="POST">
+                    @csrf
+                    <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                        <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                            <h2 class="text-xl font-bold mb-4">Add New Product</h2>
+
+                            <!-- Product Image Upload -->
+                            <!-- <div class="mb-4">
+                                <label for="photo" class="block text-gray-700">Photo</label>
+                                <input type="file" id="photo" name="photo" accept="image/*" required
+                                    class="w-full p-2 border border-gray-300 rounded mt-1">
+                                <div class="mt-2">
+                                    <img id="photoPreview" class="hidden w-full h-32 object-cover rounded-md border border-gray-300">
+                                </div>
+                            </div> -->
+
+                            <!-- Product Name -->
+                            <div class="mb-4">
+                                <label for="productName" class="block text-gray-700">Product Name</label>
+                                <input type="text" id="productName" name="productName"required class="w-full p-2 border border-gray-300 rounded mt-1">
+                            </div>
+
+                            <!-- Price -->
+                            <div class="mb-4">
+                                <label for="price" class="block text-gray-700">Price</label>
+                                <input type="number" id="price" name="productPrice"required class="w-full p-2 border border-gray-300 rounded mt-1">
+                            </div>
+
+                            <!-- Stock -->
+                            <div class="mb-4">
+                                <label for="stocks" class="block text-gray-700">Stock</label>
+                                <input type="number" id="stocks" name="productStock" required class="w-full p-2 border border-gray-300 rounded mt-1">
+                            </div>
+
+                            <!-- Buttons -->
+                            <div class="flex justify-end space-x-2">
+                                <button id="closeButton" type="button" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500">
+                                    Cancel
+                                </button>
+                                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                    Save Product
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <!-- end of add product modal -->
 
             <!-- Product List -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <table class="min-w-full text-sm">
                     <thead>
                         <tr>
+                            <th class="py-2 px-4 border-b text-left">Photo</th>
                             <th class="py-2 px-4 border-b text-left">Product Name</th>
                             <th class="py-2 px-4 border-b text-left">Price</th>
+                            <th class="py-2 px-4 border-b text-left">Stocks</th>
                             <th class="py-2 px-4 border-b text-left">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
+                    @foreach($products as $product)
                         <tr>
-                            <td class="py-2 px-4 border-b">Sample Product 1</td>
-                            <td class="py-2 px-4 border-b">$50</td>
+                            <td class="py-2 px-4 border-b">{{$user->firstName}}</td>
+                            <td class="py-2 px-4 border-b">{{$product->productName}}</td>
+                            <td class="py-2 px-4 border-b">{{$product->productPrice}}</td>
+                            <td class="py-2 px-4 border-b">{{$product->productStock}}</td>
                             <td class="py-2 px-4 border-b">
                                 <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</button>
                                 <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</button>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="py-2 px-4 border-b">Sample Product 2</td>
-                            <td class="py-2 px-4 border-b">$70</td>
-                            <td class="py-2 px-4 border-b">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</button>
-                                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</button>
-                            </td>
-                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>
@@ -125,5 +176,47 @@
     @else
     @include('/login')
     @endauth
+
+<script>
+    //Modal
+    const addProducts = document.getElementById("addProducts");
+
+    //Open Modal Button
+    const addProductButton = document.getElementById("addProductButton");
+
+    //Close Button
+    const closeButton = document.getElementById("closeButton");
+
+    addProductButton.onclick = function() {
+        addProducts.style.display = "block";
+    }
+
+
+    closeButton.onclick = function () {
+        addProducts.style.display = "none";
+    }
+
+
+    document.getElementById("photo").addEventListener("change", function (event) {
+    const file = event.target.files[0]; // Get selected file
+    const preview = document.getElementById("photoPreview");
+
+    if (file) {
+        const reader = new FileReader();
+        
+        reader.onload = function (e) {
+            preview.src = e.target.result;
+            preview.classList.remove("hidden"); // Show preview
+        };
+
+        reader.readAsDataURL(file); // Convert image to URL
+    } else {
+        preview.classList.add("hidden"); // Hide preview if no image
+    }
+});
+
+
+    
+</script>
 </body>
 </html>
