@@ -15,6 +15,13 @@ class SignInController extends Controller
         return redirect('/login');
     }
 
+    public function out() {
+        auth()->logout();
+        return redirect('/login');
+    }
+
+
+
     // Login function
     public function login(Request $request) {
         $incomingFields = $request->validate([
@@ -31,7 +38,7 @@ class SignInController extends Controller
         // Attempt login
         if (auth()->attempt(['email' => $incomingFields['logemail'], 'password' => $incomingFields['logpassword']])) {
             $request->session()->regenerate();
-            return redirect('/');
+            return auth()->user()->admin == 1 ? redirect('/admin') : redirect('/');
         }
 
         return back()->withErrors(['logpassword' => 'Incorrect credentials']);

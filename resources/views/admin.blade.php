@@ -3,12 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
+    
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 font-sans">
+    
 
     @auth
+    <title>Admin Dashboard</title>
     <!-- Main Content -->
     <div class="max-w-7xl mx-auto p-6">
         
@@ -18,6 +20,12 @@
                 <li><a href="#products" class="py-2 px-4 text-lg font-semibold text-gray-700 hover:text-blue-500">Products</a></li>
                 <li><a href="#profile" class="py-2 px-4 text-lg font-semibold text-gray-700 hover:text-blue-500">Admin Profile</a></li>
                 <li><a href="#users" class="py-2 px-4 text-lg font-semibold text-gray-700 hover:text-blue-500">Users</a></li>
+                <li>
+                    <form action="/out" method ="POST">
+                        @csrf
+                        <button type="submit" href="" class="px-4 text-lg font-semibold text-gray-700 hover:text-blue-500">Log Out</button>
+                    </form>
+                </li>
             </ul>
         </div>
 
@@ -115,7 +123,7 @@
     </div>
 
     @else
-    @include('/adLogin')
+    @include('/login')
     @endauth
 </body>
 </html>
