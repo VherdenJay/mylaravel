@@ -127,7 +127,7 @@
 
 
         <!-- Admin Profile Tab -->
-        <div id="profile" class="mt-12">
+        <!-- <div id="profile" class="mt-12">
             <h1 class="text-3xl font-bold text-gray-800 mb-6">Admin Profile</h1>
 
             <form class="bg-white p-6 rounded-lg shadow-md space-y-6">
@@ -149,7 +149,7 @@
                 </div>
                 <button class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Changes</button>
             </form>
-        </div>
+        </div> -->
 
         <!-- Users Tab -->
         <div id="users" class="mt-12">
@@ -160,21 +160,22 @@
                     <thead>
                         <tr>
                             <th class="py-2 px-4 border-b text-left">Username</th>
-                            <th class="py-2 px-4 border-b text-left">Email</th>
-                            <th class="py-2 px-4 border-b text-left">Phone</th>
+                            <th class="py-2 px-4 border-b text-left">Middle Name</th>
+                            <th class="py-2 px-4 border-b text-left">Last Name</th>
+                            <th class="py-2 px-4 border-b text-left">Name Extension</th>
+                            <th class="py-2 px-4 border-b text-left">Birth Date</th>
                         </tr>
                     </thead>
                     <tbody>
+                         @foreach($showUser as $showUsers)
                         <tr>
-                            <td class="py-2 px-4 border-b">User 1</td>
-                            <td class="py-2 px-4 border-b">user1@example.com</td>
-                            <td class="py-2 px-4 border-b">(123) 456-7890</td>
+                            <td class="py-2 px-4 border-b">{{$showUsers->firstName}}</td>
+                            <td class="py-2 px-4 border-b">{{$showUsers->middleName}}</td>
+                            <td class="py-2 px-4 border-b">{{$showUsers->lastName}}</td>
+                            <td class="py-2 px-4 border-b">{{$showUsers->nameEx}}</td>
+                            <td class="py-2 px-4 border-b">{{$showUsers->bDay}}</td>
                         </tr>
-                        <tr>
-                            <td class="py-2 px-4 border-b">User 2</td>
-                            <td class="py-2 px-4 border-b">user2@example.com</td>
-                            <td class="py-2 px-4 border-b">(987) 654-3210</td>
-                        </tr>
+                        @endforeach
                     </tbody>
                 </table>
             </div>

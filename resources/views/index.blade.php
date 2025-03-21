@@ -9,18 +9,24 @@
     @auth
     <title>Index</title>
     <!-- Content -->
-     <div class ="">
-        <div class="max-w-sm rounded-lg overflow-hidden shadow-lg bg-white">
-            <img class="w-full h-48 object-cover" src="https://via.placeholder.com/300" alt="Product Image">
-            <div class="p-4">
-                <h3 class="text-lg font-bold text-gray-800">Product Name</h3>
-                <p class="text-gray-600 text-md mt-2">$99.99</p>
-                <button class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300">
-                    Add to Cart
-                </button>
+     <div class="grid grid-cols-4 m-2 gap-4">
+
+        @foreach($products->reverse() as $product)
+        <div class ="max-w-sm  ">
+            <div class=" rounded-lg overflow-hidden shadow-lg bg-white">
+                <img class="w-full h-48 object-cover" src="{{ asset('storage/' . $product->productPhoto) }}" alt="Product Image">
+                <div class="p-4">
+                    <h3 class="text-lg font-bold text-gray-800">{{$product->productName}}</h3>
+                    <p class="text-gray-600 text-md mt-2">{{$product->productPrice}}</p>
+                    <button class="mt-4 w-full bg-blue-500 text-white py-2 px-4 rounded-lg hover:bg-blue-600 transition duration-300">
+                        Add to Cart
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+        @endforeach
+
+      </div>
 
     <!-- End of Content -->
 
