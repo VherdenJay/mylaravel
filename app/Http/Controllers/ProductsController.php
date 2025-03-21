@@ -27,19 +27,34 @@ class ProductsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(Request $request, Products $products)
     {
+        // dd($request);
+        // dd("Store method reached!");
+
         $productsInfo = $request->validate([
+            'productPhoto' => 'required|image|max:10000',
             'productName' => 'required|string|max:255',
             'productPrice' => 'required|numeric|min:0',
             'productStock' => 'required|integer|min:0',
         ]);
+
+        if ($request->file('productPhoto')) {
+            $imagePath = $request->file('productPhoto')->store('products', 'public');
+           
+            
     
-        $product = new Products();
-        $product->productName = $productsInfo['productName'];
-        $product->productPrice = $productsInfo['productPrice'];
-        $product->productStock = $productsInfo['productStock'];
-        $product->save();
+        
+        $productsInfo['productPhoto']= $imagePath;
+        Products::create($productsInfo);
+        }
+
+
+        // $product = new Products();
+        // $product->productName = $productsInfo['productName'];
+        // $product->productPrice = $productsInfo['productPrice'];
+        // $product->productStock = $productsInfo['productStock'];
+        //  $product->save();
     
         return redirect('/admin')->with('success', 'Product added successfully!');
     }
@@ -73,6 +88,8 @@ class ProductsController extends Controller
      */
     public function destroy(Products $products)
     {
-        //
+        $products->delete();
+    
+    return redirect('/admin');
     }
 }

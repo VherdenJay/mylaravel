@@ -38,21 +38,21 @@
 
             <!-- add product modal -->
             <div id="addProducts" class="hidden">
-                <form action="/store" method="POST">
+                <form action="/store" method="POST" enctype="multipart/form-data">
                     @csrf
                     <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
                         <div class="bg-white p-6 rounded-lg shadow-lg w-96">
                             <h2 class="text-xl font-bold mb-4">Add New Product</h2>
 
                             <!-- Product Image Upload -->
-                            <!-- <div class="mb-4">
+                            <div class="mb-4">
                                 <label for="photo" class="block text-gray-700">Photo</label>
-                                <input type="file" id="photo" name="photo" accept="image/*" required
+                                <input type="file" id="photo" name="productPhoto" accept="image/*" required
                                     class="w-full p-2 border border-gray-300 rounded mt-1">
                                 <div class="mt-2">
                                     <img id="photoPreview" class="hidden w-full h-32 object-cover rounded-md border border-gray-300">
                                 </div>
-                            </div> -->
+                            </div>
 
                             <!-- Product Name -->
                             <div class="mb-4">
@@ -103,20 +103,28 @@
                     <tbody>
                     @foreach($products as $product)
                         <tr>
-                            <td class="py-2 px-4 border-b">{{$user->firstName}}</td>
+                            <td class="py-2 px-4 border-b">
+                                <img src="{{ asset('storage/' . $product->productPhoto) }}" class="w-16 h-16 object-cover rounded-md">
+                            </td>
                             <td class="py-2 px-4 border-b">{{$product->productName}}</td>
                             <td class="py-2 px-4 border-b">{{$product->productPrice}}</td>
                             <td class="py-2 px-4 border-b">{{$product->productStock}}</td>
                             <td class="py-2 px-4 border-b">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</button>
-                                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</button>
+                                <div class="flex gap-2"> <!-- Added flex container with gap -->
+                                    <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</button>
+                                    <form action="/destroy/{{$product->id}}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Delete</button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
-                        @endforeach
+                    @endforeach
                     </tbody>
                 </table>
             </div>
-        </div>
+
 
         <!-- Admin Profile Tab -->
         <div id="profile" class="mt-12">

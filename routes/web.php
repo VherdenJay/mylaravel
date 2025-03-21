@@ -35,3 +35,4 @@ Route::get ('/admin', function () {
 
 //Products Routes
 Route::post ('/store', [ProductsController::class, 'store']);
+Route::delete ('/destroy/{products}', [ProductsController::class, 'destroy']);
