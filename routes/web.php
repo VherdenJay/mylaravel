@@ -2,6 +2,7 @@
 
 use App\Models\Products;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\AdminMiddleware;
 use App\Http\Controllers\loginController;
 use App\Http\Controllers\SignInController;
 use App\Http\Controllers\ProductsController;
@@ -25,14 +26,12 @@ Route::post ('/logout', [SignInController::class, 'logout']);
 //Admin
 Route::post ('/out', [SignInController::class, 'out']);
 
-//admin route
-Route::get ('/admin', function () {
-    // dd(auth()->user()->admin);
+//admin route  // dd(auth()->user()->admin);
+Route::get('/admin', function () {
     $user = auth()->user();
-    $products = Products::all();
+    $products = \App\Models\Products::all();
     return view('admin', ['user' => $user, 'products' => $products]);
-});
-
+})->middleware(AdminMiddleware::class);
 //Products Routes
 Route::post ('/store', [ProductsController::class, 'store']);
 Route::delete ('/destroy/{products}', [ProductsController::class, 'destroy']);
