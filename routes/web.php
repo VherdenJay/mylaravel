@@ -45,3 +45,4 @@ Route::get('/admin', function () {
 Route::post ('/store', [ProductsController::class, 'store']);
 Route::get ('/', [ProductsController::class, 'index']);
 Route::delete ('/destroy/{products}', [ProductsController::class, 'destroy']);
+Route::put('/update/{products}', [ProductsController::class, 'update']);

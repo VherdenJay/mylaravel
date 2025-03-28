@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -83,7 +84,85 @@
         </div>
         <!-- End of Add Product Modal -->
 
+        <!-- Update Products -->
+                    @foreach($products as $product)
+                    <div id="updateProducts" class="hidden">
+                        <form action="" method="POST" enctype="multipart/form-data" id="editProductsModal">
+                            @csrf
+                            @method('PUT')
+                            <div class="fixed inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+                                <div class="bg-white p-6 rounded-lg shadow-lg w-96">
+                                    <h2 class="text-xl font-bold mb-4">Update {{$product->productName}}</h2>
+
+                                    <!-- Product Image Upload -->
+                                    
+                                    <div class="mb-4">
+                                        <label for="photo" class="block text-gray-700">Photo</label>
+                                        <div class="mt-2">
+                                            <img id="photoEditPreview" class=" w-full h-32 object-cover rounded-md border border-gray-300" src="">
+                                        </div>
+                                    </div>
+                                    
+
+                                    <!-- Product Name -->
+                                    <div class="mb-4">
+                                        <label for="productName" class="block text-gray-700">Product Name</label>
+                                        <input type="text" id="prodName" name="productName"  value = "" class="w-full p-2 border border-gray-300 rounded mt-1">
+                                    </div>
+
+                                    <!-- Price -->
+                                    <div class="mb-4">
+                                        <label for="price" class="block text-gray-700">Price</label>
+                                        <input type="number" id="productPrice" name="productPrice" value="{{$product->productPrice}}" class="w-full p-2 border border-gray-300 rounded mt-1">
+                                    </div>
+
+                                    <!-- Stock -->
+                                    <div class="mb-4">
+                                        <label for="stocks" class="block text-gray-700">Stock</label>
+                                        <input type="number" id="productStocks" name="productStock" value="{{$product->productStock}}" class="w-full p-2 border border-gray-300 rounded mt-1">
+                                    </div>
+
+                                    <!-- Buttons -->
+                                    <div class="flex justify-end space-x-2">
+                                        <button type="button" class="bg-gray-400 text-white px-4 py-2 rounded hover:bg-gray-500" onclick="closeUpdateModal()">
+                                            Cancel
+                                        </button>
+                                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                                            Update Product
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>  
+                @endforeach
+                <!-- End of Update Products -->
+
         <!-- Product List -->
+         @if (session('delete'))
+        <div class="bg-red-500 text-white p-3 rounded mb-4" id="successLine">
+            {{ session('delete') }}
+        </div>
+        @endif
+
+        @if (session('success'))
+        <div class="bg-green-500 text-white p-3 rounded mb-4" id="successLine">
+            {{ session('success') }}
+        </div>
+        @endif
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const line = document.getElementById("successLine");
+
+                // Auto-close after 3 seconds
+                setTimeout(() => {
+                    line.classList.add("hidden");
+                }, 3000);
+            });
+        </script>
+
+        
+
         <div class="bg-white p-6 rounded-lg shadow-md">
             <table class="min-w-full text-sm">
                 <thead>
@@ -93,6 +172,7 @@
                         <th class="py-2 px-4 border-b text-left">Price</th>
                         <th class="py-2 px-4 border-b text-left">Stocks</th>
                         <th class="py-2 px-4 border-b text-left">Actions</th>
+                        <th class="py-2 px-4 border-b text-left"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -106,10 +186,10 @@
                         <td class="py-2 px-4 border-b">{{$product->productStock}}</td>
                         <td class="py-2 px-4 border-b">
                             <div class="flex gap-2">
-                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600">Edit</button>
+                                <button class="bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600" onclick="openUpdateModal({{ $product->id }}, '{{$product->productPhoto}}', '{{$product->productName}}', {{$product->productPrice}}, '{{$product->productStock}}')">Edit</button>
 
                                 <!-- Trigger Delete Modal -->
-                                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="openDeleteModal({{$product->id}})">
+                                <button class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600" onclick="openDeleteModal({{$product->id}}, '{{ addslashes($product->productName) }}')">
                                     Delete
                                 </button>
                             </div>
@@ -121,10 +201,12 @@
         </div>
     </div>
 
+    
+
     <!-- Confirmation Delete Modal -->
     <div id="confirmDeleteModal" class="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center hidden">
         <div class="bg-white p-6 rounded-lg w-96">
-            <h3 class="text-xl font-semibold">Are you sure you want to delete</h3><h3 class="text-xl font-semibold text-red-500">{{$product->productName}}?</h3>
+            <h3 class="text-xl font-semibold">Are you sure you want to delete <span id="deleteProductName" class="text-red-500"></span>?</h3>
             <div class="mt-4 flex justify-end gap-2">
                 <button class="bg-gray-500 text-white px-4 py-2 rounded" onclick="closeDeleteModal()">Cancel</button>
                 <form id="deleteForm" action="" method="POST" class="inline">
@@ -169,16 +251,51 @@
 
 <script>
 // Open Delete Modal
-function openDeleteModal(productId) {
+function openDeleteModal(productId, productName) {
     const form = document.getElementById('deleteForm');
-    form.action = `/destroy/${productId}`;  // Set the delete form action URL to the appropriate route
+    form.action = `/destroy/${productId}`;
+    document.getElementById('deleteProductName').textContent = productName;
     document.getElementById('confirmDeleteModal').classList.remove('hidden');
 }
-
 // Close Delete Modal
 function closeDeleteModal() {
     document.getElementById('confirmDeleteModal').classList.add('hidden');
 }
+
+
+
+
+
+//Update Products Modal
+function openUpdateModal(productId, productPhoto, prodName, productPrice, productStock) {
+    const updateForm = document.getElementById('editProductsModal'); 
+    updateForm.action = `/update/${productId}`;  
+
+    // Update Image Preview
+    const photoEdit = document.getElementById('photoEditPreview');
+    if (productPhoto) {
+        photoEdit.src = `/storage/${productPhoto}`;
+        photoEdit.classList.remove("hidden");
+    } else {
+        photoEdit.src = '';
+        photoEdit.classList.add("hidden");
+    }
+
+    // Update Form Inputs
+    document.getElementById('prodName').value = prodName;
+    document.getElementById("productPrice").value = productPrice;
+    document.getElementById("productStocks").value = productStock;
+
+    // Show the modal
+    document.getElementById('updateProducts').classList.remove('hidden');
+}
+function closeUpdateModal() {
+    document.getElementById('updateProducts').classList.add('hidden');
+}
+
+
+
+
 
 // Modal for Add Product
 const addProducts = document.getElementById("addProducts");

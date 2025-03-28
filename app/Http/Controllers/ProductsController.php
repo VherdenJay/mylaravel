@@ -58,7 +58,7 @@ class ProductsController extends Controller
         // $product->productStock = $productsInfo['productStock'];
         //  $product->save();
     
-        return redirect('/admin')->with('success', 'Product added successfully!');
+        return redirect('/admin')->with('success', "{$request->productName}  added successfully!");
     }
 
     /**
@@ -82,7 +82,21 @@ class ProductsController extends Controller
      */
     public function update(Request $request, Products $products)
     {
-        //
+          $productsInfo = $request->validate([
+        'productPhoto' => 'nullable|image|max:10000',
+        'productName' => 'required|string|max:255',
+        'productPrice' => 'required|numeric|min:0',
+        'productStock' => 'required|integer|min:0',
+    ]);
+
+    // Handle file upload if a new image is provided
+    if ($request->hasFile('productPhoto')) {
+        $imagePath = $request->file('productPhoto')->store('products', 'public');
+        $productsInfo['productPhoto'] = $imagePath;
+    }
+ 
+    $products->update($productsInfo);
+    return redirect()->back()->with('success', "{$request->productName} updated successfully!");
     }
 
     /**
@@ -92,6 +106,6 @@ class ProductsController extends Controller
     {
         $products->delete();
     
-    return redirect('/admin');
+    return redirect()->back()->with('delete', "{$products->productName} was deleted!");
     }
 }
